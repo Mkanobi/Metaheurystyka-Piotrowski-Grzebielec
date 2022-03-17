@@ -1,6 +1,6 @@
 import tsplib95
 #EUC_2D
-problem = tsplib95.load('a280.tsp')
+problem = tsplib95.load('problems/br17.atsp')
 
 def target_function_euc_2d(problem, path):
     solution=0
