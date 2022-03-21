@@ -2,6 +2,7 @@ import math
 import tsplib95
 import numpy
 from goal_function import goal_function
+import nn_pathfinder as nnpf
 
 def k_random(problem, k):
     rozw = math.inf
@@ -32,3 +33,23 @@ def extended_nearest_neighbour(prob):
         if contender < solution:
             solution = contender
     return solution
+
+def two_opt(prob):
+    curr = nnpf.pathfinder(prob)
+    goal = goal_function(prob, curr)
+    
+    while True:
+        candidate = curr
+        for i in range(len(curr) - 1):
+            for j in range(i + 1, len(curr) - 1):
+                contender = curr
+                nnpf.invert(contender, i, j)
+                if goal_function(prob, contender) < goal:
+                    candidate = contender
+                    goal = goal_function(prob, candidate)
+        if curr != candidate:
+            curr = candidate
+        else:
+            break
+    
+    return goal
