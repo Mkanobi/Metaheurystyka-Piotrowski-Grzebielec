@@ -1,5 +1,5 @@
 import math
-import tsplib95
+# import tsplib95
 import numpy
 from goal_function import goal_function
 import nn_pathfinder as nnpf
@@ -7,7 +7,7 @@ import nn_pathfinder as nnpf
 def k_random(problem, k):
     rozw = math.inf
     arr = list(problem.get_nodes())
-    for i in range(k):
+    for _ in range(k):
         numpy.random.shuffle(arr)
         rozw = min(rozw,goal_function(problem,arr))
     return rozw
@@ -37,7 +37,6 @@ def extended_nearest_neighbour(prob):
 def two_opt(prob):
     curr = nnpf.pathfinder(prob)
     goal = goal_function(prob, curr)
-    
     while True:
         candidate = curr
         for i in range(len(curr) - 1):
@@ -51,5 +50,4 @@ def two_opt(prob):
             curr = candidate
         else:
             break
-    
     return goal

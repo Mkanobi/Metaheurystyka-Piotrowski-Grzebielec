@@ -1,27 +1,45 @@
 import tsplib95
 import time
-
 from algorithms import extended_nearest_neighbour, k_random, nearest_neighbour, two_opt
 from problem_render import problem_render_euclidean
+import statistics as stat
+import numpy
 
-problem1 = tsplib95.parse(problem_render_euclidean('problem testowy',100,0,500))
+def tester(x, k=10):
+    results = [[0.0 for _ in range(len(x))] for _ in range(4)]
+    tmp = [[0.0 for _ in range(k)] for _ in range(4)]
 
-start = time.time()
-print('Rozwiazanie 100-Random: ' + str(k_random(problem1,100)))
-end = time.time()
-print('Czas 100-Random: ' + str(end - start) + ' s')
+    for i in range(len(x)):
+        for j in range(k):
+            problem1 = tsplib95.parse(problem_render_euclidean('problem testowy',x[i],0,500))
+            
+            start = time.time()
+            k_random(problem1,100)
+            end = time.time()
+            tmp[0][j] = end - start
 
-start = time.time()
-print('Rozwiazanie Nearest Neigbour: ' + str(nearest_neighbour(problem1,1)))
-end = time.time()
-print('Czas Nearest Nieghbour: ' + str(end - start) + ' s')
+            start = time.time()
+            nearest_neighbour(problem1,1)
+            end = time.time()
+            tmp[1][j] = end - start
 
-start = time.time()
-print('Rozwiazanie Extended Nearest Neigbour: ' + str(extended_nearest_neighbour(problem1)))
-end = time.time()
-print('Czas Extended Nearest Nieghbour: ' + str(end - start) + ' s')
+            if x[i] <= 20:
+                start = time.time()
+                extended_nearest_neighbour(problem1)
+                end = time.time()
+                tmp[2][j] = end - start
+            else:
+                tmp[2][j] = numpy.nan
 
-start = time.time()
-print('Rozwiazanie 2-OPT: ' + str(two_opt(problem1)))
-end = time.time()
-print('Czas 2-OPT: ' + str(end - start) + ' s')
+            if x[i] <= 20:
+                start = time.time()
+                two_opt(problem1)
+                end = time.time()
+                tmp[3][j] = end - start
+            else:
+                tmp[3][j] = numpy.nan
+        
+        for l in range(4):
+            results[l][i] = stat.mean(tmp[l])
+        
+    return results
