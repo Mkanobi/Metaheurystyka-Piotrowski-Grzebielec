@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from quality_testing import tester
+from time_tester import tester
 import numpy
 
 x = [i for i in range(10, 61, 1)]
