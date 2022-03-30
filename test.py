@@ -3,9 +3,9 @@ import time
 from algorithms import extended_nearest_neighbour, k_random, nearest_neighbour, two_opt
 from problem_render import problem_render_euclidean
 import statistics as stat
-import numpy
 
-def tester(x, k=10):
+
+def tester(x, k=100):
     results = [[0.0 for _ in range(len(x))] for _ in range(4)]
     tmp = [[0.0 for _ in range(k)] for _ in range(4)]
 
@@ -23,21 +23,17 @@ def tester(x, k=10):
             end = time.time()
             tmp[1][j] = end - start
 
-            if x[i] <= 20:
-                start = time.time()
-                extended_nearest_neighbour(problem1)
-                end = time.time()
-                tmp[2][j] = end - start
-            else:
-                tmp[2][j] = numpy.nan
 
-            if x[i] <= 20:
-                start = time.time()
-                two_opt(problem1)
-                end = time.time()
-                tmp[3][j] = end - start
-            else:
-                tmp[3][j] = numpy.nan
+            start = time.time()
+            extended_nearest_neighbour(problem1)
+            end = time.time()
+            tmp[2][j] = end - start
+
+            start = time.time()
+            two_opt(problem1)
+            end = time.time()
+            tmp[3][j] = end - start
+
         
         for l in range(4):
             results[l][i] = stat.mean(tmp[l])
