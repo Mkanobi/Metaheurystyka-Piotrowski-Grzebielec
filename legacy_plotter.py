@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from test import tester
+from legacy_test import tester
 
 x = [i for i in range(1, 101, 1)]
 results = tester(x, 100)
