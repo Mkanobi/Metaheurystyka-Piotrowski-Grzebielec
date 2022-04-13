@@ -1,5 +1,4 @@
 import math
-import tsplib95
 from goal_function import goal_function as gf
 
 def pathfinder_core(prob, start):
