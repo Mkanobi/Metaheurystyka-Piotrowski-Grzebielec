@@ -11,3 +11,8 @@ def insert(path, i, j):
     tmp = path[i]
     del path[i]
     path.insert(j, tmp)
+
+def reverse_insert(path, i, j):
+    tmp = path[j]
+    del path[j]
+    path.insert(i, tmp)

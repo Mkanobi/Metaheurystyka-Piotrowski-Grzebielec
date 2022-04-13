@@ -3,9 +3,9 @@ import time
 import argparse
 import math
 
-from algorithms import extended_nearest_neighbour, k_random, nearest_neighbour, two_opt
+from algorithms2 import extended_nearest_neighbour, k_random, nearest_neighbour, two_opt
 from problem_render import problem_render_asymmetrical, problem_render_euclidean, problem_render_symmetrical
-
+from tabu_search import tabu_search
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--type', type=str,
@@ -57,32 +57,38 @@ if (args.output is not None):
 
 print('Typ problemu: ' + type + ', ' + 'Rozmiar: ' + str(dim) + '\n')
 
-result = [math.inf for _ in range(4)]
-exec_time = [0.0 for _ in range(4)]
+result = [math.inf for _ in range(5)]
+exec_time = [0.0 for _ in range(5)]
 
 start = time.time()
-result[0] = k_random(problem,100)
+result[0] = k_random(problem,100)[1]
 end = time.time()
 exec_time[0] = end - start
 print("Obliczono k-random...")
 
 start = time.time()
-result[1] = nearest_neighbour(problem,1)
+result[1] = nearest_neighbour(problem,1)[1]
 end = time.time()
 exec_time[1] = end - start
 print("Obliczono nn...")
 
 start = time.time()
-result[2] = extended_nearest_neighbour(problem)
+result[2] = extended_nearest_neighbour(problem)[1]
 end = time.time()
 exec_time[2] = end - start
 print("Obliczono enn...")
 
 start = time.time()
-result[3] = two_opt(problem)
+result[3] = two_opt(problem)[1]
 end = time.time()
 exec_time[3] = end - start
 print("Obliczono two_opt...")
+
+start = time.time()
+result[4] = tabu_search(problem,nearest_neighbour(problem,1)[0],'swap',100,2000)[1]
+end = time.time()
+exec_time[4] = end - start
+print("Obliczono tabu_search...")
    
 best = min(result)
 
@@ -102,3 +108,7 @@ print('Czas Extended Nearest Nieghbour: ' + str(exec_time[2]) + ' s\n')
 print('Rozwiazanie 2-OPT: ' + str(result[3]))
 print('PRD Extended 2-OPT: ' + "{:.2%}".format( (result[3]-best)/best))
 print('Czas Extended 2-OPT: ' + str(exec_time[3]) + ' s\n')
+
+print('Rozwiazanie tabu: ' + str(result[4]))
+print('PRD Extended tabu: ' + "{:.2%}".format( (result[4]-best)/best))
+print('Czas Extended tabu: ' + str(exec_time[4]) + ' s\n')

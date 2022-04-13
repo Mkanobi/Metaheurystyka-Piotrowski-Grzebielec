@@ -1,4 +1,4 @@
-from neighborlib import invert, swap, insert
+from neighborlib import invert, swap, insert, reverse_insert
 from goal_function import goal_function as goal
 import copy
 import math
@@ -8,34 +8,39 @@ import math
 # N: typ sąsiędztwa
 # length: długość pamięci tabu
 # k: liczba iteracji
-def tabu_search(problem, solution, neighbor_type='invert', length, k):
+def tabu_search(problem, solution, neighbor_type, length, k):
     if neighbor_type == 'invert':
         nfunc = invert
+        nfunc2 = invert
     elif neighbor_type == 'swap':
         nfunc = swap
+        nfunc2 = swap
     else:
         nfunc = insert
+        nfunc2 = reverse_insert
     
     tabu = [[] for _ in range(length)]
     ptr = 0
     result = solution
     result_goal = goal(problem, solution)
     
-    for _ in range(k):
+    for z in range(k):
+        #print('tabu iteracja' +str(z))
         N = []
+        best = math.inf
         for i in range(len(solution)):
             for j in range(i+1, len(solution)):
-                tmp = solution.copy()
+                tmp = solution
                 nfunc(tmp, i, j)
-                N.append(tmp)
+                if tmp not in tabu:
+                    v = goal(problem, tmp)
+                    if v < best:
+                        best = v
+                        solution = tmp
+                nfunc2(tmp, i, j)
                 
-        best = math.inf
-        for contender in N:
-            if contender not in tabu:
-                tmp = goal(problem, contender)
-                if tmp < best:
-                    best = tmp
-                    solution = contender
+        
+            
                
         if best < result_goal:
             result = solution
