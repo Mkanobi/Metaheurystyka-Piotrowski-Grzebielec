@@ -85,10 +85,10 @@ exec_time[3] = end - start
 print("Obliczono two_opt...")
 
 start = time.time()
-result[4] = tabu_search(problem,nearest_neighbour(problem,1)[0],'swap',100,2000)[1]
+result[4] = tabu_search(problem,two_opt(problem)[0],'invert',100,2000)[1]
 end = time.time()
 exec_time[4] = end - start
-print("Obliczono tabu_search...")
+print("Obliczono tabu_search...\n")
    
 best = min(result)
 

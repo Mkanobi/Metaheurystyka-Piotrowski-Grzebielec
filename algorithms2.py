@@ -42,6 +42,7 @@ def extended_nearest_neighbour(prob):
 def two_opt(prob):
     curr = nnpf.pathfinder(prob)
     goal = goal_function(prob, curr)
+    solution = curr[:]
     while True:
         candidate = curr
         for i in range(len(curr) - 1):
@@ -51,8 +52,7 @@ def two_opt(prob):
                 if goal_function(prob, contender) < goal:
                     candidate = contender
                     goal = goal_function(prob, candidate)
-        if curr != candidate:
-            curr = candidate
-        else:
+                    solution = candidate[:]
+        if curr == candidate:
             break
-    return curr, goal
+    return solution, goal
