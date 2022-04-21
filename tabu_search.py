@@ -1,7 +1,7 @@
 from neighborlib import invert, swap, insert, reverse_insert
 from goal_function import goal_function as goal
-import copy
 import math
+from progressBar import printProgressBar
 
 # problem: problem do rozwiązania
 # solution: rozwiązanie startowe w formacie listy
@@ -20,6 +20,7 @@ def tabu_search(problem, solution, neighbor_type, length, k):
         nfunc2 = reverse_insert
     
     tabu = [[] for _ in range(length)]
+#     alt = [[] for _ in range(length)]
     ptr = 0
     result = solution
     result_goal = goal(problem, solution)
