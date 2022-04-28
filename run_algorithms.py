@@ -5,7 +5,7 @@ import math
 
 from algorithms2 import extended_nearest_neighbour, k_random, nearest_neighbour, two_opt
 from problem_render import problem_render_asymmetrical, problem_render_euclidean, problem_render_symmetrical
-from tabu_search import tabu_search
+from tabu_simple import tabu_search
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--type', type=str,
@@ -61,7 +61,8 @@ result = [math.inf for _ in range(5)]
 exec_time = [0.0 for _ in range(5)]
 
 start = time.time()
-result[0] = k_random(problem,100)[1]
+tmp = k_random(problem,1000)
+result[0] = tmp[1]
 end = time.time()
 exec_time[0] = end - start
 print("Obliczono k-random...")
@@ -85,7 +86,7 @@ exec_time[3] = end - start
 print("Obliczono two_opt...")
 
 start = time.time()
-result[4] = tabu_search(problem,two_opt(problem)[0],'invert',100,2000)[1]
+result[4] = tabu_search(problem,tmp[0],'swap',10,200)[1]
 end = time.time()
 exec_time[4] = end - start
 print("Obliczono tabu_search...\n")
@@ -93,9 +94,9 @@ print("Obliczono tabu_search...\n")
 best = min(result)
 
 
-print('Rozwiazanie 100-Random: ' + str(result[0]))
-print('PRD 100-Random: ' + "{:.2%}".format( (result[0]-best)/best) )
-print('Czas 100-Random: ' + str(exec_time[0]) + ' s\n')
+print('Rozwiazanie 1000-Random: ' + str(result[0]))
+print('PRD 1000-Random: ' + "{:.2%}".format( (result[0]-best)/best) )
+print('Czas 1000-Random: ' + str(exec_time[0]) + ' s\n')
 
 print('Rozwiazanie Nearest Nieghbour: ' + str(result[1]))
 print('PRD Nearest Nieghbour: ' + "{:.2%}".format( (result[1]-best)/best))

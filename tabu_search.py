@@ -1,7 +1,6 @@
 from neighborlib import invert, swap, insert, reverse_insert
 from goal_function import goal_function as goal
 import math
-# from progressBar import printProgressBar
 
 # problem: problem do rozwiązania
 # solution: rozwiązanie startowe w formacie listy
@@ -28,7 +27,6 @@ def tabu_search(problem, solution, neighbor_type, length, k):
     
     for _ in range(k):
         tmp_solution = []
-#         printProgressBar(z, k, length=130)
         best = math.inf
         for i in range(len(solution)):
             for j in range(i+1, len(solution)):
@@ -52,6 +50,6 @@ def tabu_search(problem, solution, neighbor_type, length, k):
         
         if best == math.inf:
             solution = alt[ptr[1]]
+        else: solution = tmp_solution
     
-#     printProgressBar(100, 100, length=130)
     return result, result_goal
