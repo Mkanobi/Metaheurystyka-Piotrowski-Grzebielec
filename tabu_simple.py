@@ -1,6 +1,7 @@
 from neighborlib import invert, swap, insert, reverse_insert
-from goal_function import goal_function as goal
+from goal_function import path_len as goal_better
 import math
+import time
 
 # problem: problem do rozwiązania
 # solution: rozwiązanie startowe w formacie listy
@@ -18,24 +19,30 @@ def tabu_search(problem, solution, neighbor_type, length, k):
         nfunc = insert
         nfunc2 = reverse_insert
     
+    cnt = 0
+    exec_time = 0
     dim = problem.dimension
     tabu = [[-1, -1] for _ in range(length)]
     t_arr = [[0 for _ in range(dim)] for _ in range(dim)]
     alt = [[] for _ in range(length)]
     ptr = [0, 0]
     result = solution
-    result_goal = goal(problem, solution)
+    v = goal(problem, solution)
+    result_goal = v
     
-    for o in range(k):
-#         print(o)
+    for _ in range(k):
         flag = False
         best = math.inf
         for i in range(len(solution)):
             for j in range(i+1, len(solution)):
                 guard = True
-                nfunc(solution, i, j)
                 if t_arr[i][j] == 0:
-                    v = goal(problem, solution)
+                    start = time.time()
+                    cnt += 1
+                    v = goal_better(problem, solution, v, i, j, neighbor_type)
+                    end = time.time()
+                    exec_time += (end - start)
+                    nfunc(solution, i, j)
                     if v < best:
                         best = v
                         if flag:
@@ -61,5 +68,7 @@ def tabu_search(problem, solution, neighbor_type, length, k):
             result = solution[:]
             result_goal = best
     
+    print(exec_time)
+    print(cnt)
     return result, result_goal
 

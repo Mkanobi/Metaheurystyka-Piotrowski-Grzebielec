@@ -6,3 +6,4 @@ def goal_function(problem, path):
         solution += problem.get_weight(path[i - 1], path[i])
     solution += problem.get_weight(path[len(path)-1], path[0])
     return solution
+def path_len(i, j)
