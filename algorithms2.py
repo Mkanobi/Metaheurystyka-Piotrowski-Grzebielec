@@ -12,7 +12,7 @@ def k_random(problem, k):
         numpy.random.shuffle(arr)
         if (rozw > goal_function(problem,arr)):
             rozw = goal_function(problem,arr)
-            path = arr
+            path = arr[:]
     return path, rozw
 
 def nearest_neighbour(prob, start):

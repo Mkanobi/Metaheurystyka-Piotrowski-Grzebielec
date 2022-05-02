@@ -1,7 +1,43 @@
 from neighborlib import invert, swap, insert, reverse_insert
-from goal_function import path_len as goal_better
+from goal_function import goal_function as goal
+from goal_function import path_len
 import math
 import time
+#TODO:obsloga invert,insert
+def generate_goal_tab(problem,goal_val,solution,neighbor_type):
+    tab = [[0 for i in range(len(solution))] for j in range(len(solution))]
+    if (neighbor_type == 'swap'):
+        for i in range(len(solution)):
+            for j in range(i+1, len(solution)):
+                tab[i][j] = goal_val
+                if (i-1 >= 0):
+                    previ = solution[i-1]
+                else:
+                    previ = solution[len(solution)-1]
+                tab[i][j] -= path_len(problem,previ,solution[i])
+                tab[i][j] += path_len(problem,previ,solution[j])
+                if (j-1 >= 0):
+                    prevj = solution[j-1]
+                else:
+                    prevj = solution[len(solution)-1]
+                tab[i][j] -= path_len(problem,prevj,solution[j])
+                tab[i][j] += path_len(problem,prevj,solution[i])
+
+                if (i+1 < len(solution)):
+                    nexti = solution[i+1]
+                else:
+                    nexti = solution[0]
+                tab[i][j] -= path_len(problem,solution[i],nexti)
+                tab[i][j] += path_len(problem,solution[j],nexti)
+
+                if (j+1 < len(solution)):
+                    nextj = solution[j+1]
+                else:
+                    nextj = solution[0]
+                tab[i][j] -= path_len(problem,solution[j],nextj)
+                tab[i][j] += path_len(problem,solution[i],nextj)
+        
+    return tab          
 
 # problem: problem do rozwiązania
 # solution: rozwiązanie startowe w formacie listy
@@ -29,20 +65,23 @@ def tabu_search(problem, solution, neighbor_type, length, k):
     result = solution
     v = goal(problem, solution)
     result_goal = v
+    print("Startowe rozw tabu: " + str(result_goal))
     
     for _ in range(k):
         flag = False
         best = math.inf
+        goal_tab = generate_goal_tab(problem,goal(problem,solution),solution,neighbor_type)
         for i in range(len(solution)):
             for j in range(i+1, len(solution)):
                 guard = True
+                nfunc(solution, i, j)
                 if t_arr[i][j] == 0:
                     start = time.time()
                     cnt += 1
-                    v = goal_better(problem, solution, v, i, j, neighbor_type)
+                    #v = goal(problem, solution)
+                    v = goal_tab[i][j]
                     end = time.time()
                     exec_time += (end - start)
-                    nfunc(solution, i, j)
                     if v < best:
                         best = v
                         if flag:
@@ -68,7 +107,7 @@ def tabu_search(problem, solution, neighbor_type, length, k):
             result = solution[:]
             result_goal = best
     
-    print(exec_time)
-    print(cnt)
+    #print(exec_time)
+    #print(cnt)
     return result, result_goal
 
