@@ -127,9 +127,11 @@ def tabu_search(problem, solution, neighbor_type, length, limit):
                 nfunc2(solution, i, j)
                 
         if best == math.inf:
-            solution = alt[ptr[1]][0]
-            tabu = alt[ptr[1]][1]
-            t_arr = alt[ptr[1]][2]
+            used = ptr[1]
+            if alt[ptr[1]] == [[], [], []]: used = 0 
+            solution = alt[used][0]
+            tabu = alt[used][1]
+            t_arr = alt[used][2]
         else:
             nfunc(solution, ti, tj)
             t_arr[tabu[ptr[0]][0]][tabu[ptr[0]][1]] = 0
@@ -146,10 +148,12 @@ def tabu_search(problem, solution, neighbor_type, length, limit):
             result_goal = best
         else:
             cnt += 1
-            if cnt > limit/2:
-                solution = alt[ptr[1]][0]
-                tabu = alt[ptr[1]][1]
-                t_arr = alt[ptr[1]][2]
+            if cnt == limit/2:
+                used = ptr[1]
+                if alt[ptr[1]] == [[], [], []]: used = 0
+                solution = alt[used][0]
+                tabu = alt[used][1]
+                t_arr = alt[used][2]
             
 #     print(exe)
     #print(cnt)
