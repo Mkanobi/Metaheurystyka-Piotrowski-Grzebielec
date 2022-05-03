@@ -143,7 +143,12 @@ def tabu_search(problem, solution, neighbor_type, length, limit):
             ptr[1] = (ptr[1] + 1) % length
             result = solution[:]
             result_goal = best
-        else: cnt += 1
+        else:
+            cnt += 1
+            if cnt > limit/2:
+                solution = alt[ptr[1]][0]
+                tabu = alt[ptr[1]][1]
+                t_arr = alt[ptr[1]][2]
             
 #     print(exe)
     #print(cnt)
