@@ -3,40 +3,81 @@ from goal_function import goal_function as goal
 from goal_function import path_len
 import math
 import time
-#TODO:obsloga invert,insert
 def generate_goal_tab(problem,goal_val,solution,neighbor_type):
     tab = [[0 for i in range(len(solution))] for j in range(len(solution))]
     if (neighbor_type == 'swap'):
         for i in range(len(solution)):
             for j in range(i+1, len(solution)):
                 tab[i][j] = goal_val
-                if (i-1 >= 0):
-                    previ = solution[i-1]
-                else:
-                    previ = solution[len(solution)-1]
-                tab[i][j] -= path_len(problem,previ,solution[i])
-                tab[i][j] += path_len(problem,previ,solution[j])
-                if (j-1 >= 0):
-                    prevj = solution[j-1]
-                else:
-                    prevj = solution[len(solution)-1]
-                tab[i][j] -= path_len(problem,prevj,solution[j])
-                tab[i][j] += path_len(problem,prevj,solution[i])
+                
+                if(j-i == 1):
+                    previ = solution[(i-1)%len(solution)]
+                    tab[i][j] -= path_len(problem,previ,solution[i])
+                    tab[i][j] += path_len(problem,previ,solution[j])
 
-                if (i+1 < len(solution)):
-                    nexti = solution[i+1]
-                else:
-                    nexti = solution[0]
-                tab[i][j] -= path_len(problem,solution[i],nexti)
-                tab[i][j] += path_len(problem,solution[j],nexti)
+                    nextj = solution[(j+1)%len(solution)]
+                    tab[i][j] -= path_len(problem,solution[j],nextj)
+                    tab[i][j] += path_len(problem,solution[i],nextj)
+                    tab[i][j] += - path_len(problem,solution[i],solution[j]) + path_len(problem,solution[j],solution[i])
+                elif (j-i == len(solution)-1):
+                    prevj = solution[(j-1)%len(solution)]
+                    tab[i][j] -= path_len(problem,prevj,solution[j])
+                    tab[i][j] += path_len(problem,prevj,solution[i])
 
-                if (j+1 < len(solution)):
-                    nextj = solution[j+1]
+                    nexti = solution[(i+1)%len(solution)]
+                    tab[i][j] -= path_len(problem,solution[i],nexti)
+                    tab[i][j] += path_len(problem,solution[j],nexti)
+                    tab[i][j] -= - path_len(problem,solution[i],solution[j]) + path_len(problem,solution[j],solution[i])
                 else:
-                    nextj = solution[0]
-                tab[i][j] -= path_len(problem,solution[j],nextj)
-                tab[i][j] += path_len(problem,solution[i],nextj)
-        
+
+                    previ = solution[(i-1)%len(solution)]
+                    tab[i][j] -= path_len(problem,previ,solution[i])
+                    tab[i][j] += path_len(problem,previ,solution[j])
+
+                    nextj = solution[(j+1)%len(solution)]
+                    tab[i][j] -= path_len(problem,solution[j],nextj)
+                    tab[i][j] += path_len(problem,solution[i],nextj)
+
+                    prevj = solution[(j-1)%len(solution)]
+                    tab[i][j] -= path_len(problem,prevj,solution[j])
+                    tab[i][j] += path_len(problem,prevj,solution[i])
+
+                    nexti = solution[(i+1)%len(solution)]
+                    tab[i][j] -= path_len(problem,solution[i],nexti)
+                    tab[i][j] += path_len(problem,solution[j],nexti)
+
+                #swap(solution,i,j)
+                #if (tab[i][j] != goal(problem,solution)):
+                #    print("Blad! " +str(i) + ", " + str(j) + ", " + str(tab[i][j]) + ", " + str(goal(problem,solution)))
+                #swap(solution,i,j)
+    if (neighbor_type == 'invert'):
+        for i in range(len(solution)):
+            tab[i][i] = goal_val
+            for j in range(i+1, len(solution)):
+                if (i == 0 and j == len(solution)-1):
+                    tab[i][j] = tab[i][j-1]
+                else: 
+                    tab[i][j] = tab[i][j-1] 
+                    tab[i][j] += - path_len(problem,solution[(i-1)%len(solution)],solution[(j-1)%len(solution)]) + path_len(problem,solution[(i-1)%len(solution)],solution[j])
+                    tab[i][j] += path_len(problem,solution[j],solution[(j-1)%len(solution)]) - path_len(problem,solution[i],solution[j])
+                    tab[i][j] += - path_len(problem,solution[j],solution[(j+1)%len(solution)]) + path_len(problem,solution[i],solution[(j+1)%len(solution)])
+
+                #invert(solution,i,j)
+                #if (tab[i][j] != goal(problem,solution)):
+                #    print("Blad! " +str(i) + ", " + str(j) + ", " + str(tab[i][j]) + ", " + str(goal(problem,solution)))
+                #invert(solution,i,j)
+    if (neighbor_type == 'insert'):
+        for i in range(len(solution)):
+            for j in range(i+1, len(solution)):
+                tab[i][j] = goal_val
+                if (j-i != len(solution)-1):
+                    tab[i][j] += path_len(problem,solution[i],solution[(j+1)%len(solution)]) - path_len(problem,solution[j],solution[(j+1)%len(solution)])
+                    tab[i][j] += path_len(problem,solution[(i-1)%len(solution)],solution[(i+1)%len(solution)]) - path_len(problem,solution[(i-1)%len(solution)],solution[i])
+                    tab[i][j] += path_len(problem,solution[j],solution[i]) - path_len(problem,solution[i],solution[(i+1)%len(solution)])
+                    insert(solution,i,j)
+                #if (tab[i][j] != goal(problem,solution)):
+                #    print("Blad! " +str(i) + ", " + str(j) + ", " + str(tab[i][j]) + ", " + str(goal(problem,solution)))
+                #reverse_insert(solution,i,j)
     return tab          
 
 # problem: problem do rozwiązania
