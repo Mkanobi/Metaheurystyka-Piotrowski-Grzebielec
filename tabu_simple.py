@@ -75,7 +75,7 @@ def tabu_search(problem, solution, neighbor_type, length, k):
             for j in range(i+1, len(solution)):
                 guard = True
                 nfunc(solution, i, j)
-                if t_arr[i][j] == 0:
+                if t_arr[i][j] == 0 or goal_tab[i][j] > result_goal:
                     start = time.time()
                     cnt += 1
                     #v = goal(problem, solution)
