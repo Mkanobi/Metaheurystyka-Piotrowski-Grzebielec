@@ -59,5 +59,5 @@ def two_opt(prob):
         if curr == candidate:
             break
         
-    print(cnt)
+#     print(cnt)
     return solution, goal
