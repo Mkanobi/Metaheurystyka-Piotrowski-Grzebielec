@@ -1,6 +1,7 @@
 from neighborlib import invert, swap, insert, reverse_insert
 from goal_function import goal_function as goal
 import math
+from copy import copy
 
 # problem: problem do rozwiązania
 # solution: rozwiązanie startowe w formacie listy

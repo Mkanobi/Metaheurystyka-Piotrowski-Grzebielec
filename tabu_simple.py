@@ -3,6 +3,7 @@ from goal_function import goal_function as goal
 from goal_function import path_len
 import math
 from time import time
+from copy import copy
 
 def generate_goal_tab(problem, goal_val, solution, neighbor_type):
     tab = [[0 for _ in range(len(solution))] for _ in range(len(solution))]
@@ -137,9 +138,9 @@ def tabu_search(problem, solution, neighbor_type, length, limit):
             ptr[0] = (ptr[0] + 1) % length
         if best < result_goal:
             cnt = 0
-            alt[ptr[1]][0] = result[:]
-            alt[ptr[1]][1] = tabu[:]
-            alt[ptr[1]][2] = t_arr[:]
+            alt[ptr[1]][0] = copy(result)
+            alt[ptr[1]][1] = copy(tabu)
+            alt[ptr[1]][2] = copy(t_arr)
             ptr[1] = (ptr[1] + 1) % length
             result = solution[:]
             result_goal = best
