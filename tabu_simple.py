@@ -115,6 +115,7 @@ def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, li
     for _ in range(k):
         best = math.inf
         start = time()
+        #print("dl " + str(len(solution)))
         goal_tab = generate_goal_tab(problem, goal(problem, solution), solution, neighbor_type)
         exe += time() - start
         
@@ -165,12 +166,13 @@ def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, li
                 #cnt3 += 1
                 used = ptr[1]
                 if alt[ptr[1]] == [[], [], []]: used = 0
+                if alt[0] == [[], [], []]: continue
                 solution = alt[used][0]
                 tabu = alt[used][1]
                 t_arr = alt[used][2]
             
 #     print(exe)
     #print(cnt)
-    print("Liczba nawrotow: " + str(cnt3))
+    #print("Liczba nawrotow: " + str(cnt3))
     return result, result_goal
 

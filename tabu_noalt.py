@@ -106,7 +106,7 @@ def tabu_search(problem, solution, neighbor_type, length, k):
     result = solution
     v = goal(problem, solution)
     result_goal = v
-    print("Startowe rozw tabu: " + str(result_goal))
+    #print("Startowe rozw tabu: " + str(result_goal))
     
     for _ in range(k):
         flag = False
