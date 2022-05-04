@@ -88,7 +88,7 @@ def generate_goal_tab(problem, goal_val, solution, neighbor_type):
 # N: typ sąsiędztwa
 # length: długość pamięci tabu
 # k: liczba iteracji
-def tabu_search(problem, solution, neighbor_type, length, limit):
+def tabu_search(problem, solution, neighbor_type, length, k, limit):
     if neighbor_type == 'invert':
         nfunc = invert
         nfunc2 = invert
@@ -112,7 +112,7 @@ def tabu_search(problem, solution, neighbor_type, length, limit):
     result_goal = goal(problem, solution)
 #     print("Startowe rozw tabu: " + str(result_goal))
     
-    while cnt < limit:
+    for _ in range(k):
         best = math.inf
         start = time()
         goal_tab = generate_goal_tab(problem, goal(problem, solution), solution, neighbor_type)
@@ -158,7 +158,7 @@ def tabu_search(problem, solution, neighbor_type, length, limit):
             result_goal = best
         else:
             cnt += 1
-            if cnt == limit/2:
+            if cnt % limit == limit:
                 #print("nawrot")
                 cnt3 += 1
                 used = ptr[1]
