@@ -88,7 +88,7 @@ def generate_goal_tab(problem, goal_val, solution, neighbor_type):
 # N: typ sąsiędztwa
 # length: długość pamięci tabu
 # k: liczba iteracji
-def tabu_search(problem, solution, neighbor_type, length, k, limit):
+def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, limit):
     if neighbor_type == 'invert':
         nfunc = invert
         nfunc2 = invert
@@ -103,9 +103,9 @@ def tabu_search(problem, solution, neighbor_type, length, k, limit):
     cnt = 0
     cnt3 = 0
     dim = problem.dimension
-    tabu = [[-1, -1] for _ in range(length)]
+    tabu = [[-1, -1] for _ in range(tabu_length)]
     t_arr = [[0 for _ in range(dim)] for _ in range(dim)]
-    alt = [[[], [], []] for _ in range(length)]
+    alt = [[[], [], []] for _ in range(alt_length)]
     ptr = [0, 0]
     ti, tj = 0, 0
     result = solution
@@ -133,9 +133,9 @@ def tabu_search(problem, solution, neighbor_type, length, k, limit):
         #print("i: " + str(ti) + ", j: " + str(tj) + ", t_arr[i][j]: " + str(t_arr[ti][tj]) + ", result: " + str(result_goal))
         #print(alt[(ptr[1]-1)%length][2])
         #print("Indeksy: " + str(ti) + " " + str(tj))
-        if alt[(ptr[1]-1)%length] != [[], [], []]:
-            alt[(ptr[1]-1)%length][2][ti][tj]=1
-            alt[(ptr[1]-1)%length][1][(ptr[0]-1)%length] = [ti,tj]
+        if alt[(ptr[1]-1)%alt_length] != [[], [], []]:
+            alt[(ptr[1]-1)%alt_length][2][ti][tj]=1
+            alt[(ptr[1]-1)%alt_length][1][(ptr[0]-1)%tabu_length] = [ti,tj]
         if best == math.inf:
             used = ptr[1]
             if alt[ptr[1]] == [[], [], []]: used = 0 
@@ -147,20 +147,22 @@ def tabu_search(problem, solution, neighbor_type, length, k, limit):
             t_arr[tabu[ptr[0]][0]][tabu[ptr[0]][1]] = 0
             t_arr[ti][tj] = 1
             tabu[ptr[0]] = [ti, tj]
-            ptr[0] = (ptr[0] + 1) % length
+            ptr[0] = (ptr[0] + 1) % tabu_length
         if best < result_goal:
+            #print("poprawa")
             cnt = 0
             alt[ptr[1]][0] = copy(result)
             alt[ptr[1]][1] = copy(tabu)
             alt[ptr[1]][2] = copy(t_arr)
-            ptr[1] = (ptr[1] + 1) % length
+            ptr[1] = (ptr[1] + 1) % alt_length
             result = solution[:]
             result_goal = best
         else:
             cnt += 1
-            if cnt % limit == limit:
+            if cnt == limit:
+                cnt=0
                 #print("nawrot")
-                cnt3 += 1
+                #cnt3 += 1
                 used = ptr[1]
                 if alt[ptr[1]] == [[], [], []]: used = 0
                 solution = alt[used][0]

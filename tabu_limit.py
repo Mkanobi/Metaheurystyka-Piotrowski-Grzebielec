@@ -2,10 +2,13 @@ from neighborlib import invert, swap, insert, reverse_insert
 from goal_function import goal_function as goal
 from goal_function import path_len
 import math
-import time
-def generate_goal_tab(problem,goal_val,solution,neighbor_type):
-    tab = [[0 for i in range(len(solution))] for j in range(len(solution))]
-    if (neighbor_type == 'swap'):
+from time import time
+from copy import copy
+
+def generate_goal_tab(problem, goal_val, solution, neighbor_type):
+    tab = [[0 for _ in range(len(solution))] for _ in range(len(solution))]
+    
+    if neighbor_type == 'swap':
         for i in range(len(solution)):
             for j in range(i+1, len(solution)):
                 tab[i][j] = goal_val
@@ -85,7 +88,7 @@ def generate_goal_tab(problem,goal_val,solution,neighbor_type):
 # N: typ sąsiędztwa
 # length: długość pamięci tabu
 # k: liczba iteracji
-def tabu_search(problem, solution, neighbor_type, length, k):
+def tabu_search(problem, solution, neighbor_type, length, limit):
     if neighbor_type == 'invert':
         nfunc = invert
         nfunc2 = invert
@@ -96,48 +99,49 @@ def tabu_search(problem, solution, neighbor_type, length, k):
         nfunc = insert
         nfunc2 = reverse_insert
     
+    exe = 0.0
     cnt = 0
-    exec_time = 0
+    cnt3 = 0
     dim = problem.dimension
     tabu = [[-1, -1] for _ in range(length)]
     t_arr = [[0 for _ in range(dim)] for _ in range(dim)]
-    alt = [[] for _ in range(length)]
+    alt = [[[], [], []] for _ in range(length)]
     ptr = [0, 0]
+    ti, tj = 0, 0
     result = solution
-    v = goal(problem, solution)
-    result_goal = v
-    print("Startowe rozw tabu: " + str(result_goal))
+    result_goal = goal(problem, solution)
+#     print("Startowe rozw tabu: " + str(result_goal))
     
-    for _ in range(k):
-        flag = False
+    while cnt < limit:
         best = math.inf
-        goal_tab = generate_goal_tab(problem,goal(problem,solution),solution,neighbor_type)
+        start = time()
+        goal_tab = generate_goal_tab(problem, goal(problem, solution), solution, neighbor_type)
+        exe += time() - start
+        
         for i in range(len(solution)):
             for j in range(i+1, len(solution)):
-                guard = True
                 nfunc(solution, i, j)
                 if t_arr[i][j] == 0 or goal_tab[i][j] < result_goal:
-                    start = time.time()
-                    cnt += 1
-                    #v = goal(problem, solution)
+                    #if t_arr[i][j] == 1 and goal_tab[i][j] < result_goal:
+                    #    print("gool")
                     v = goal_tab[i][j]
-                    end = time.time()
-                    exec_time += (end - start)
                     if v < best:
                         best = v
-                        if flag:
-                            guard = False
-                            nfunc2(solution, i, j)
-                            nfunc(solution, ti, tj)
-                            alt[ptr[1]] = solution
-                            nfunc2(solution, ti, tj)
-                            ptr[1] = (ptr[1] + 1) % length
                         ti, tj = i, j
-                        flag = True
-                if guard: nfunc2(solution, i, j)
-                
+                nfunc2(solution, i, j)
+        
+        #print("i: " + str(ti) + ", j: " + str(tj) + ", t_arr[i][j]: " + str(t_arr[ti][tj]) + ", result: " + str(result_goal))
+        #print(alt[(ptr[1]-1)%length][2])
+        #print("Indeksy: " + str(ti) + " " + str(tj))
+        if alt[(ptr[1]-1)%length] != [[], [], []]:
+            alt[(ptr[1]-1)%length][2][ti][tj]=1
+            alt[(ptr[1]-1)%length][1][(ptr[0]-1)%length] = [ti,tj]
         if best == math.inf:
-            solution = alt[ptr[1]]
+            used = ptr[1]
+            if alt[ptr[1]] == [[], [], []]: used = 0 
+            solution = alt[used][0]
+            tabu = alt[used][1]
+            t_arr = alt[used][2]
         else:
             nfunc(solution, ti, tj)
             t_arr[tabu[ptr[0]][0]][tabu[ptr[0]][1]] = 0
@@ -145,9 +149,26 @@ def tabu_search(problem, solution, neighbor_type, length, k):
             tabu[ptr[0]] = [ti, tj]
             ptr[0] = (ptr[0] + 1) % length
         if best < result_goal:
+            cnt = 0
+            alt[ptr[1]][0] = copy(result)
+            alt[ptr[1]][1] = copy(tabu)
+            alt[ptr[1]][2] = copy(t_arr)
+            ptr[1] = (ptr[1] + 1) % length
             result = solution[:]
             result_goal = best
-    
-    #print(exec_time)
+        else:
+            cnt += 1
+            if cnt == limit/2:
+                #print("nawrot")
+                cnt3 += 1
+                used = ptr[1]
+                if alt[ptr[1]] == [[], [], []]: used = 0
+                solution = alt[used][0]
+                tabu = alt[used][1]
+                t_arr = alt[used][2]
+            
+#     print(exe)
     #print(cnt)
+    print("Liczba nawrotow: " + str(cnt3))
     return result, result_goal
+

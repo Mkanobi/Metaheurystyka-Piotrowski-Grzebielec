@@ -87,7 +87,7 @@ exec_time[3] = end - start
 print("Obliczono two_opt...")
 
 start = time.time()
-result[4] = tabu_search(problem,tmp1[0],'swap',7,80,10)[1]
+result[4] = tabu_search(problem,tmp1[0],'swap',7,3,200,20)[1]
 end = time.time()
 exec_time[4] = end - start
 print("Obliczono tabu_search...\n")
