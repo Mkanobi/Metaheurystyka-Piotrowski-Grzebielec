@@ -77,7 +77,8 @@ def generate_goal_tab(problem, goal_val, solution, neighbor_type):
                     tab[i][j] += path_len(problem,solution[i],solution[(j+1)%len(solution)]) - path_len(problem,solution[j],solution[(j+1)%len(solution)])
                     tab[i][j] += path_len(problem,solution[(i-1)%len(solution)],solution[(i+1)%len(solution)]) - path_len(problem,solution[(i-1)%len(solution)],solution[i])
                     tab[i][j] += path_len(problem,solution[j],solution[i]) - path_len(problem,solution[i],solution[(i+1)%len(solution)])
-                    insert(solution,i,j)
+                
+                #insert(solution,i,j)
                 #if (tab[i][j] != goal(problem,solution)):
                 #    print("Blad! " +str(i) + ", " + str(j) + ", " + str(tab[i][j]) + ", " + str(goal(problem,solution)))
                 #reverse_insert(solution,i,j)
@@ -108,7 +109,7 @@ def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, li
     alt = [[[], [], []] for _ in range(alt_length)]
     ptr = [0, 0]
     ti, tj = 0, 0
-    result = solution
+    result = copy(solution)
     result_goal = goal(problem, solution)
 #     print("Startowe rozw tabu: " + str(result_goal))
     
@@ -130,7 +131,7 @@ def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, li
                         best = v
                         ti, tj = i, j
                 nfunc2(solution, i, j)
-        
+
         #print("i: " + str(ti) + ", j: " + str(tj) + ", t_arr[i][j]: " + str(t_arr[ti][tj]) + ", result: " + str(result_goal))
         #print(alt[(ptr[1]-1)%length][2])
         #print("Indeksy: " + str(ti) + " " + str(tj))
@@ -156,8 +157,10 @@ def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, li
             alt[ptr[1]][1] = copy(tabu)
             alt[ptr[1]][2] = copy(t_arr)
             ptr[1] = (ptr[1] + 1) % alt_length
-            result = solution[:]
+            result = copy(solution)
             result_goal = best
+            #if (goal(problem,result) != result_goal):
+            #    print("Blad result")
         else:
             cnt += 1
             if cnt == limit:
@@ -170,9 +173,11 @@ def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, li
                 solution = alt[used][0]
                 tabu = alt[used][1]
                 t_arr = alt[used][2]
-            
 #     print(exe)
     #print(cnt)
     #print("Liczba nawrotow: " + str(cnt3))
+    if (goal(problem,result) != result_goal):
+            print("Blad result koniec")
+            return [],0
     return result, result_goal
 

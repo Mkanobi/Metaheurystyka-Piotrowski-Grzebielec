@@ -1,7 +1,8 @@
+from copy import copy
 from neighborlib import swap, invert, insert, reverse_insert
 
 x = [1,2,3,4,5,6]
-
+xprim = copy(x)
 i = 2
 j = 5
 
@@ -22,3 +23,12 @@ print(x)
 reverse_insert(x,i,j)
 print(x)
 print('')
+
+for i in range(len(x)):
+    for j in range(i+1,len(x)):
+        print (str(i) + ", " + str(j))
+        insert(x,i,j)
+        reverse_insert(x,i,j)
+        if (x != xprim):
+            print("Blad!")
+            print(x)
