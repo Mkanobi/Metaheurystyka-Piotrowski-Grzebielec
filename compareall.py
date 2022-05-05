@@ -8,7 +8,7 @@ import math
 import matplotlib.pyplot as plt
 import time
 # import numpy
-iterations = 300
+iterations = 100
 alt_length = 5
 alt_limit = 5
 def quality_tester(x, k=100):
@@ -23,8 +23,8 @@ def quality_tester(x, k=100):
         print(i)
         for j in range(k):
             print(str(i) + ", " + str(j))
-            problem1 = tsplib95.parse(problem_render_euclidean('problem testowy',x[i],0,500))
-            #problem1 = tsplib95.parse(problem_render_asymmetrical('problem testowy',x[i],0,500))
+            #problem1 = tsplib95.parse(problem_render_euclidean('problem testowy',x[i],0,500))
+            problem1 = tsplib95.parse(problem_render_asymmetrical('problem testowy',x[i],0,500))
             #problem1 = tsplib95.parse(problem_render_symmetrical('problem testowy',x[i],0,500))
             #print(len(lst[0][0]))
 
@@ -82,7 +82,7 @@ def quality_tester(x, k=100):
 x = [i for i in range(20, 31, 1)]
 problem_count = 20
 results = quality_tester(x,problem_count)
-problem_type = "EUC_2D"
+problem_type = "ATSP"
 fig, (ax1, ax2) = plt.subplots(1, 2)
 fig.suptitle('tabu z listą nawrotów (rozmiar nawrotów + ' + str(alt_length) + ', limit nawrotów ' + str(alt_limit) + ', rozw. startowe - 100-random, średnia z 20 prób, limit ' + str(iterations) + ' iteracji, wielkość tabu: 7, sąsiedztwo: swap)')
 #ax1.plot(x, results[0], "-o", label="100-random")
