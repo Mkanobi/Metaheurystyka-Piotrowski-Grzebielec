@@ -7,10 +7,13 @@ import statistics as stat
 import math
 import matplotlib.pyplot as plt
 import time
+import sys
 # import numpy
-iterations = 100
-alt_length = 5
-alt_limit = 5
+
+iterations = int(sys.argv[1])
+alt_length = int(sys.argv[2])
+alt_limit = int(sys.argv[3])
+
 def quality_tester(x, k=100):
     results = [[0.0 for _ in range(len(x))] for _ in range(6)]
     tmp = [[0.0 for _ in range(k)] for _ in range(6)]
@@ -28,20 +31,20 @@ def quality_tester(x, k=100):
             #problem1 = tsplib95.parse(problem_render_symmetrical('problem testowy',x[i],0,500))
             #print(len(lst[0][0]))
 
-            start = time.time()
+#             start = time.time()
             lst[0] = k_random(problem1,100)
-            end = time.time()
-            tmp_time[0][j] = end - start
+#             end = time.time()
+#             tmp_time[0][j] = end - start
 
-            start = time.time()
+#             start = time.time()
             lst[1] = nearest_neighbour(problem1,1)
-            end = time.time()
-            tmp_time[1][j] = end - start
+#             end = time.time()
+#             tmp_time[1][j] = end - start
             
-            start = time.time()
+#             start = time.time()
             lst[2] = extended_nearest_neighbour(problem1)
-            end = time.time()
-            tmp_time[2][j] = end - start
+#             end = time.time()
+#             tmp_time[2][j] = end - start
 
             start = time.time()
             lst[3] = two_opt(problem1)
@@ -86,8 +89,8 @@ problem_type = "ATSP"
 fig, (ax1, ax2) = plt.subplots(1, 2)
 fig.suptitle('tabu z listą nawrotów (rozmiar nawrotów + ' + str(alt_length) + ', limit nawrotów ' + str(alt_limit) + ', rozw. startowe - 100-random, średnia z 20 prób, limit ' + str(iterations) + ' iteracji, wielkość tabu: 7, sąsiedztwo: swap)')
 #ax1.plot(x, results[0], "-o", label="100-random")
-ax1.plot(x, results[0][1], "-g", label="near")
-ax1.plot(x, results[0][2], "-b", label="ex near")
+# ax1.plot(x, results[0][1], "-g", label="near")
+# ax1.plot(x, results[0][2], "-b", label="ex near")
 ax1.plot(x, results[0][3], "-m", label="2-opt")
 #ax1.plot(x, results[5], "-r", label="tabu bez listy nawrotów")
 ax1.plot(x, results[0][4], "-r", label="tabu 100-random")
@@ -101,8 +104,8 @@ ax1.grid()
 ax2.set_title("Średni czas działania algorytmów w zależności od wielkości problemu\n (średnia z " + str(problem_count) + " generowanych problemów " + problem_type + " dla każdej wielkości problemu)")
 
 #ax2.plot(x, results[0], "-o", label="100-random")
-ax2.plot(x, results[1][1], "-g", label="near")
-ax2.plot(x, results[1][2], "-b", label="ex near")
+# ax2.plot(x, results[1][1], "-g", label="near")
+# ax2.plot(x, results[1][2], "-b", label="ex near")
 ax2.plot(x, results[1][3], "-m", label="2-opt")
 ax2.plot(x, results[1][4], "-r", label="tabu 100-random")
 ax2.plot(x, results[1][5], "-k", label="tabu nearest-neighbour")
