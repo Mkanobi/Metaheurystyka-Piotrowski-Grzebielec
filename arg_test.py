@@ -11,6 +11,9 @@ import sys
 # import numpy
 
 def quality_tester(x, k, alt_length, itr):
+    print(x)
+    print(alt_length)
+    print(itr)
     results = [[0.0 for _ in range(len(x))] for _ in range(6)]
     tmp = [[0.0 for _ in range(k)] for _ in range(6)]
     lst = [[[],0] for _ in range(6)]
@@ -23,7 +26,7 @@ def quality_tester(x, k, alt_length, itr):
         for j in range(k):
             print(str(i) + ", " + str(j))
             #problem1 = tsplib95.parse(problem_render_euclidean('problem testowy',x[i],0,500))
-            problem1 = tsplib95.parse(problem_render_asymmetrical('problem testowy',30,0,500))
+            problem1 = tsplib95.parse(problem_render_asymmetrical('problem testowy',20,0,500))
             #problem1 = tsplib95.parse(problem_render_symmetrical('problem testowy',x[i],0,500))
 
             lst[0] = k_random(problem1,100)
@@ -62,14 +65,14 @@ def quality_tester(x, k, alt_length, itr):
         
     return results[4]
 
-lim = [i for i in range(5, 16)]
+lim = [i for i in range(5, 11)]
 problem_count = 20
 
 for itr in range(20, 201, 20):
     plt.figure()
     plt.imshow(
-        [quality_tester(lim, 100, length, itr) for length in range(5, 11)],
-        extent=[0, 10, T_min, 10 * T_min],
+        [quality_tester(lim, 15, length, itr) for length in range(5, 9)],
+        extent=[0, 1, 5, 9],
         aspect='auto',
         origin='lower')
     plt.colorbar()
