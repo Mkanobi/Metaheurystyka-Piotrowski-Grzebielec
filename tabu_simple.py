@@ -102,7 +102,7 @@ def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, li
     
     exe = 0.0
     cnt = 0
-    cnt3 = 0
+#     cnt3 = 0
     dim = problem.dimension
     tabu = [[-1, -1] for _ in range(tabu_length)]
     t_arr = [[0 for _ in range(dim)] for _ in range(dim)]
@@ -177,7 +177,7 @@ def tabu_search(problem, solution, neighbor_type, tabu_length, alt_length, k, li
     #print(cnt)
     #print("Liczba nawrotow: " + str(cnt3))
     if (goal(problem,result) != result_goal):
-            print("Blad result koniec")
-            return [],0
+        print("Blad result koniec")
+        return [],0
     return result, result_goal
 
