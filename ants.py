@@ -1,12 +1,18 @@
 from goal_function import goal_function as goal
-from random import choices, randrange
+from random import choices, randrange, shuffle
 from threading import Thread
 import math
 
-# TODO
-# boolean list of visited
+# from StackOverflow
+def split(a, n):
+    k, m = divmod(len(a), n)
+    return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
-def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, beta: int, Q: int, added: list, result: list) -> None:
+def ant_walk_mult(weights: list, pheromones: list, starting_city: list, alpha: int, beta: int, added: list, result: list) -> None:
+    for str_ct in starting_city:
+        ant_walk(weights, pheromones, str_ct, alpha, beta, added, result)
+
+def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, beta: int, added: list, result: list) -> None:
     """
     weights: 2D list of edge weights
     pheromones: 2D list of pheromones deposit
@@ -37,17 +43,17 @@ def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, be
     path_len += weights[path[-1]][starting_city]
 
     # Pheromones update
-    delta = Q / path_len
+    delta = 100 / path_len
     for idx in range(dim):
         added[path[idx]][path[(idx+1) % dim]].append(delta)
 
     result.append([path, path_len])
 
-
-def ant_colony(problem, iterations: int, colony_size: int, t_cnt: int, alpha: int, beta: int, rho: int, Q: int = 100) -> list:
+def ant_colony(problem, iterations: int, colony_size: int, t_cnt: int, alpha: int, beta: int, rho: int) -> list:
     result = [[], math.inf]
     cities = list(problem.get_nodes())
     dim = len(cities)
+    colony_size = min(colony_size, dim)
     weights = [[problem.get_weight(i, j) for j in cities] for i in cities]
     pheromones = [[100.0 for _ in range(dim)] for _ in range(dim)]
 
@@ -55,11 +61,14 @@ def ant_colony(problem, iterations: int, colony_size: int, t_cnt: int, alpha: in
         added = [[[] for _ in range(dim)] for _ in range(dim)]
         threads = []
         paths = []
-        for _ in range(colony_size):
-            starting_city = randrange(dim)
+        tmp = list(range(dim))
+        shuffle(tmp)
+        tmp = tmp[:colony_size]
+        starting_points = list(split(tmp, t_cnt))
+        for starting_city in starting_points:
             threads.append(Thread(
-                target=ant_walk,
-                args=[weights, pheromones, starting_city, alpha, beta, Q, added, paths]))
+                target=ant_walk_mult,
+                args=[weights, pheromones, starting_city, alpha, beta, added, paths]))
         for t in threads: t.start()
         for t in threads: t.join()
 

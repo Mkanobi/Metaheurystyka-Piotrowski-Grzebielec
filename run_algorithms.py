@@ -59,8 +59,8 @@ if (args.output is not None):
 
 print('Typ problemu: ' + type + ', ' + 'Rozmiar: ' + str(dim) + '\n')
 
-result = [math.inf for _ in range(5)]
-exec_time = [0.0 for _ in range(5)]
+result = [math.inf for _ in range(6)]
+exec_time = [0.0 for _ in range(6)]
 
 start = time.time()
 tmp = k_random(problem,1000)
@@ -88,16 +88,16 @@ end = time.time()
 exec_time[3] = end - start
 print("Obliczono two_opt...")
 
-# start = time.time()
-# result[4] = tabu_search(problem,tmp1[0],'swap',7,3,100,10)[1]
-# end = time.time()
-# exec_time[4] = end - start
-# print("Obliczono tabu_search...\n")
-
 start = time.time()
-result[4] = ant_colony(problem, 30, 15, 4, 1, 3, 0.1)[1]
+result[4] = tabu_search(problem,tmp1[0],'swap',7,3,100,10)[1]
 end = time.time()
 exec_time[4] = end - start
+print("Obliczono tabu_search...\n")
+
+start = time.time()
+result[5] = ant_colony(problem, 40, 20, 1, 1, 3, 0.1)[1]
+end = time.time()
+exec_time[5] = end - start
 print('Obliczono ACO...\n')
 
 best = min(result)
@@ -119,10 +119,10 @@ print('Rozwiazanie 2-OPT: ' + str(result[3]))
 print('PRD Extended 2-OPT: ' + "{:.2%}".format( (result[3]-best)/best))
 print('Czas Extended 2-OPT: ' + str(exec_time[3]) + ' s\n')
 
-# print('Rozwiazanie tabu: ' + str(result[4]))
-# print('PRD Extended tabu: ' + "{:.2%}".format( (result[4]-best)/best))
-# print('Czas Extended tabu: ' + str(exec_time[4]) + ' s\n')
+print('Rozwiazanie tabu: ' + str(result[4]))
+print('PRD Extended tabu: ' + "{:.2%}".format( (result[4]-best)/best))
+print('Czas Extended tabu: ' + str(exec_time[4]) + ' s\n')
 
-print('Rozwiazanie ACO: ' + str(result[4]))
-print('PRD ACO: ' + "{:.2%}".format( (result[4]-best)/best))
-print('Czas ACO: ' + str(exec_time[4]) + ' s\n')
+print('Rozwiazanie ACO: ' + str(result[5]))
+print('PRD ACO: ' + "{:.2%}".format( (result[5]-best)/best))
+print('Czas ACO: ' + str(exec_time[5]) + ' s\n')
