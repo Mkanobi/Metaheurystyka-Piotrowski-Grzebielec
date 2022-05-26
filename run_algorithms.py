@@ -6,6 +6,8 @@ import math
 from algorithms2 import extended_nearest_neighbour, k_random, nearest_neighbour, two_opt
 from problem_render import problem_render_asymmetrical, problem_render_euclidean, problem_render_symmetrical
 from tabu_simple import tabu_search
+from ants import ant_colony
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--type', type=str,
@@ -86,12 +88,18 @@ end = time.time()
 exec_time[3] = end - start
 print("Obliczono two_opt...")
 
+# start = time.time()
+# result[4] = tabu_search(problem,tmp1[0],'swap',7,3,100,10)[1]
+# end = time.time()
+# exec_time[4] = end - start
+# print("Obliczono tabu_search...\n")
+
 start = time.time()
-result[4] = tabu_search(problem,tmp1[0],'swap',7,3,100,10)[1]
+result[4] = ant_colony(problem, 30, 15, 4, 1, 3, 0.1)[1]
 end = time.time()
 exec_time[4] = end - start
-print("Obliczono tabu_search...\n")
-   
+print('Obliczono ACO...\n')
+
 best = min(result)
 
 
@@ -111,6 +119,10 @@ print('Rozwiazanie 2-OPT: ' + str(result[3]))
 print('PRD Extended 2-OPT: ' + "{:.2%}".format( (result[3]-best)/best))
 print('Czas Extended 2-OPT: ' + str(exec_time[3]) + ' s\n')
 
-print('Rozwiazanie tabu: ' + str(result[4]))
-print('PRD Extended tabu: ' + "{:.2%}".format( (result[4]-best)/best))
-print('Czas Extended tabu: ' + str(exec_time[4]) + ' s\n')
+# print('Rozwiazanie tabu: ' + str(result[4]))
+# print('PRD Extended tabu: ' + "{:.2%}".format( (result[4]-best)/best))
+# print('Czas Extended tabu: ' + str(exec_time[4]) + ' s\n')
+
+print('Rozwiazanie ACO: ' + str(result[4]))
+print('PRD ACO: ' + "{:.2%}".format( (result[4]-best)/best))
+print('Czas ACO: ' + str(exec_time[4]) + ' s\n')

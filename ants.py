@@ -23,9 +23,14 @@ def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, be
     # The main part of the ant walk, creating the path
     for itr in range(dim-1):
         city = path[-1]
-        ppb = [pow(pheromones[city][k], alpha) * pow(1 / weights[city][k], beta) if k not in path else 0.0 for k in range(dim)]
-        tmp = sum(ppb)
-        ppb = [x / tmp for x in ppb]
+        ppb = [
+            (pow(pheromones[city][k], alpha) * \
+            pow(1 / weights[city][k], beta) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
+        if -1 not in ppb:
+            tmp = sum(ppb)
+            ppb = [x / tmp for x in ppb]
+        else:
+            ppb = [1 if x == -1 else 0 for x in ppb]
         choice = choices(range(dim), ppb)[0]
         path_len += weights[city][choice]
         path.append(choice)
@@ -34,36 +39,36 @@ def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, be
     # Pheromones update
     delta = Q / path_len
     for idx in range(dim):
-        added[idx][(idx+1) % dim].append(delta)
+        added[path[idx]][path[(idx+1) % dim]].append(delta)
 
     result.append([path, path_len])
 
 
-def ant_colony(problem, iterations: int, colony_size: int, alpha: int, beta: int, rho: int, Q: int = 100) -> list:
+def ant_colony(problem, iterations: int, colony_size: int, t_cnt: int, alpha: int, beta: int, rho: int, Q: int = 100) -> list:
     result = [[], math.inf]
     cities = list(problem.get_nodes())
     dim = len(cities)
     weights = [[problem.get_weight(i, j) for j in cities] for i in cities]
-    pheromones = [[0.0 for _ in range(dim)] for _ in range(dim)]
+    pheromones = [[100.0 for _ in range(dim)] for _ in range(dim)]
 
     for itr in range(iterations):
         added = [[[] for _ in range(dim)] for _ in range(dim)]
         threads = []
         paths = []
-        for idx in range(colony_size):
+        for _ in range(colony_size):
             starting_city = randrange(dim)
             threads.append(Thread(
                 target=ant_walk,
-                arguments=[weights, pheromones, starting_city, alpha, beta, Q, added, paths]))
-        for t in threads: t.run()
+                args=[weights, pheromones, starting_city, alpha, beta, Q, added, paths]))
+        for t in threads: t.start()
         for t in threads: t.join()
 
         for i in range(dim):
             for j in range(dim):
-                pheromones[i][j] *= i-rho
+                pheromones[i][j] *= 1-rho
                 pheromones[i][j] += sum(added[i][j])
 
         for path in paths:
-            if path[1] < result[1]: result = path
+            if path[1] < result[1]: result = path[:]
 
     return result
