@@ -7,6 +7,9 @@ from algorithms2 import extended_nearest_neighbour, k_random, nearest_neighbour,
 from problem_render import problem_render_asymmetrical, problem_render_euclidean, problem_render_symmetrical
 from tabu_simple import tabu_search
 from ants import ant_colony
+from tourney_ants import ant_colony as tourney
+from elite_ants import ant_colony as elite
+from elite_ants_timed import ant_colony as timed
 
 parser = argparse.ArgumentParser()
 
@@ -59,8 +62,8 @@ if (args.output is not None):
 
 print('Typ problemu: ' + type + ', ' + 'Rozmiar: ' + str(dim) + '\n')
 
-result = [math.inf for _ in range(6)]
-exec_time = [0.0 for _ in range(6)]
+result = [math.inf for _ in range(9)]
+exec_time = [0.0 for _ in range(9)]
 
 start = time.time()
 tmp = k_random(problem,1000)
@@ -92,13 +95,30 @@ start = time.time()
 result[4] = tabu_search(problem,tmp1[0],'swap',7,3,100,10)[1]
 end = time.time()
 exec_time[4] = end - start
-print("Obliczono tabu_search...\n")
+print("Obliczono tabu_search...")
 
 start = time.time()
-result[5] = ant_colony(problem, 40, 20, 1, 1, 3, 0.1)[1]
+result[5] = ant_colony(problem, 40, 20, 4, 1, 3, 0.1)[1]
 end = time.time()
 exec_time[5] = end - start
-print('Obliczono ACO...\n')
+print('Obliczono ACO...')
+
+start = time.time()
+result[6] = tourney(problem, 40, 20, 4, 1, 3, 0.1, 7)[1]
+end = time.time()
+exec_time[6] = end - start
+print('Obliczono Tourney...')
+
+start = time.time()
+result[7] = elite(problem, 40, 20, 4, 1, 3, 0.1, 0.2)[1]
+end = time.time()
+exec_time[7] = end - start
+print('Obliczono Elite...')
+
+exe = timed(problem, 5, 20, 4, 1, 3, 0.1, 0.2)
+result[8] = exe[1]
+exec_time[8] = exe[2]
+print('Obliczono Timed...\n')
 
 best = min(result)
 
@@ -116,13 +136,25 @@ print('PRD Extended Nearest Nieghbour: ' + "{:.2%}".format( (result[2]-best)/bes
 print('Czas Extended Nearest Nieghbour: ' + str(exec_time[2]) + ' s\n')
 
 print('Rozwiazanie 2-OPT: ' + str(result[3]))
-print('PRD Extended 2-OPT: ' + "{:.2%}".format( (result[3]-best)/best))
-print('Czas Extended 2-OPT: ' + str(exec_time[3]) + ' s\n')
+print('PRD 2-OPT: ' + "{:.2%}".format( (result[3]-best)/best))
+print('Czas 2-OPT: ' + str(exec_time[3]) + ' s\n')
 
 print('Rozwiazanie tabu: ' + str(result[4]))
-print('PRD Extended tabu: ' + "{:.2%}".format( (result[4]-best)/best))
-print('Czas Extended tabu: ' + str(exec_time[4]) + ' s\n')
+print('PRD tabu: ' + "{:.2%}".format( (result[4]-best)/best))
+print('Czas tabu: ' + str(exec_time[4]) + ' s\n')
 
 print('Rozwiazanie ACO: ' + str(result[5]))
 print('PRD ACO: ' + "{:.2%}".format( (result[5]-best)/best))
 print('Czas ACO: ' + str(exec_time[5]) + ' s\n')
+
+print('Rozwiazanie Tourney: ' + str(result[6]))
+print('PRD Tourney: ' + "{:.2%}".format( (result[6]-best)/best))
+print('Czas Tourney: ' + str(exec_time[6]) + ' s\n')
+
+print('Rozwiazanie Elite: ' + str(result[7]))
+print('PRD Elite: ' + "{:.2%}".format( (result[7]-best)/best))
+print('Czas Elite: ' + str(exec_time[7]) + ' s\n')
+
+print('Rozwiazanie Timed: ' + str(result[8]))
+print('PRD Timed: ' + "{:.2%}".format( (result[8]-best)/best))
+print('Czas Timed: ' + str(exec_time[8]) + ' s\n')
