@@ -11,6 +11,7 @@ from ants import ant_colony
 from tourney_ants import ant_colony as tourney
 from elite_ants import ant_colony as elite
 from elite_ants_timed import ant_colony as timed
+from elite_ants_timed_randomized import ant_colony as elite_timed_randomized
 
 parser = argparse.ArgumentParser()
 
@@ -63,8 +64,8 @@ if (args.output is not None):
 
 print('Typ problemu: ' + type + ', ' + 'Rozmiar: ' + str(dim) + '\n')
 
-result = [math.inf for _ in range(10)]
-exec_time = [0.0 for _ in range(10)]
+result = [math.inf for _ in range(11)]
+exec_time = [0.0 for _ in range(11)]
 
 start = time.time()
 tmp = k_random(problem,1000)
@@ -126,6 +127,11 @@ result[9] = exe[1]
 exec_time[9] = exe[2]
 print('Obliczono Timed...\n')
 
+exe = elite_timed_randomized(problem, 5, 20, 4, 1, 3, 0.1, 0, 0)
+result[10] = exe[1]
+exec_time[10] = exe[2]
+print('Obliczono Timed, elite, randomized...\n')
+
 best = min(result)
 
 
@@ -168,3 +174,7 @@ print('Czas Elite: ' + str(exec_time[8]) + ' s\n')
 print('Rozwiazanie Timed: ' + str(result[9]))
 print('PRD Timed: ' + "{:.2%}".format( (result[9]-best)/best))
 print('Czas Timed: ' + str(exec_time[9]) + ' s\n')
+
+print('Rozwiazanie Elite Timed Randomized: ' + str(result[10]))
+print('PRD Timed: ' + "{:.2%}".format( (result[10]-best)/best))
+print('Czas Timed: ' + str(exec_time[10]) + ' s\n')
