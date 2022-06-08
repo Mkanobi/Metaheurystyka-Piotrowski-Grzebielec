@@ -14,16 +14,9 @@ def ant_walk_mult(weights: list, pheromones: list, starting_city: list, alpha: i
     for str_ct in starting_city:
         ant_walk(weights, pheromones, str_ct, alpha, beta, rand, added, result)
 
+# Multiplicative model
+# Multiplication in place of powers
 def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, beta: int, rand: int, added: list, result: list) -> None:
-    """
-    weights: 2D list of edge weights
-    pheromones: 2D list of pheromones deposit
-    starting_city: The city from which the ant begins it's walk
-    alpha: Influence control over pheromones
-    beta: Influence control over distance
-    Q: The ants pheromone stack
-    added, result: Return lists for threads operations
-    """
     dim = len(weights)
     path = [starting_city]
     path_len = 0
@@ -32,8 +25,8 @@ def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, be
     for itr in range(dim-1):
         city = path[-1]
         ppb = [
-            (pow(pheromones[city][k], alpha) * \
-            pow(1 / weights[city][k], beta) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
+            (pheromones[city][k] * alpha * \
+            (1 / weights[city][k]) * beta) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
         if -1 not in ppb:
             zipped = zip(ppb, range(dim))
             greedy_choice = max(zipped)[1]

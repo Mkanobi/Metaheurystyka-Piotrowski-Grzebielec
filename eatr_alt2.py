@@ -10,20 +10,15 @@ def split(a, n):
     k, m = divmod(len(a), n)
     return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
-def ant_walk_mult(weights: list, pheromones: list, starting_city: list, alpha: int, beta: int, rand: int, added: list, result: list) -> None:
+def ant_walk_mult(weights: list, pheromones: list, starting_city: list, alpha: int, rand: int, added: list, result: list) -> None:
     for str_ct in starting_city:
-        ant_walk(weights, pheromones, str_ct, alpha, beta, rand, added, result)
+        ant_walk(weights, pheromones, str_ct, alpha, rand, added, result)
 
-def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, beta: int, rand: int, added: list, result: list) -> None:
-    """
-    weights: 2D list of edge weights
-    pheromones: 2D list of pheromones deposit
-    starting_city: The city from which the ant begins it's walk
-    alpha: Influence control over pheromones
-    beta: Influence control over distance
-    Q: The ants pheromone stack
-    added, result: Return lists for threads operations
-    """
+# No distance in ppb
+# Roullette whell based solely on pheromone strenght
+# Distance influence during pheromone update
+# synonymus to beta=0
+def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, rand: int, added: list, result: list) -> None:
     dim = len(weights)
     path = [starting_city]
     path_len = 0
@@ -32,8 +27,7 @@ def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, be
     for itr in range(dim-1):
         city = path[-1]
         ppb = [
-            (pow(pheromones[city][k], alpha) * \
-            pow(1 / weights[city][k], beta) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
+            pow(pheromones[city][k], alpha) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
         if -1 not in ppb:
             zipped = zip(ppb, range(dim))
             greedy_choice = max(zipped)[1]
@@ -54,7 +48,7 @@ def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, be
 
     result.append([path, path_len])
 
-def ant_colony(problem, constraint: int, colony_size: int, t_cnt: int, alpha: int, beta: int, rho: int, elite: int, rand: int) -> list:
+def ant_colony(problem, constraint: int, colony_size: int, t_cnt: int, alpha: int, rho: int, elite: int, rand: int) -> list:
     start = time.time()
     result = [[], math.inf]
     cities = list(problem.get_nodes())
@@ -75,7 +69,7 @@ def ant_colony(problem, constraint: int, colony_size: int, t_cnt: int, alpha: in
         for starting_city in starting_points:
             threads.append(Thread(
                 target=ant_walk_mult,
-                args=[weights, pheromones, starting_city, alpha, beta, rand, added, paths]))
+                args=[weights, pheromones, starting_city, alpha, rand, added, paths]))
         for t in threads: t.start()
         for t in threads: t.join()
 
