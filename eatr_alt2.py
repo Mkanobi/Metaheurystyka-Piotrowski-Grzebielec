@@ -26,8 +26,7 @@ def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, ra
     # The main part of the ant walk, creating the path
     for itr in range(dim-1):
         city = path[-1]
-        ppb = [
-            pow(pheromones[city][k], alpha) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
+        ppb = [(pow(pheromones[city][k], alpha) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
         if -1 not in ppb:
             zipped = zip(ppb, range(dim))
             greedy_choice = max(zipped)[1]
