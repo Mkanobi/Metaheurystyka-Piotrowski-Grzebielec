@@ -1,4 +1,5 @@
 from goal_function import goal_function as goal
+from algorithms2 import nearest_neighbour as nn
 from random import choices, randrange, shuffle
 from threading import Thread
 import math
@@ -60,7 +61,8 @@ def ant_colony(problem, constraint: int, colony_size: int, t_cnt: int, alpha: in
     dim = len(cities)
     colony_size = min(colony_size, dim)
     weights = [[problem.get_weight(i, j) for j in cities] for i in cities]
-    pheromones = [[100.0 for _ in range(dim)] for _ in range(dim)]
+    n_n = nn(problem,1)[1]
+    pheromones = [[100.0/n_n for _ in range(dim)] for _ in range(dim)]
 
     while time.time() - start < constraint:
         added = [[[] for _ in range(dim)] for _ in range(dim)]
@@ -85,8 +87,10 @@ def ant_colony(problem, constraint: int, colony_size: int, t_cnt: int, alpha: in
         for path in paths:
             if path[1] < result[1]: result = path[:]
 
-        delta = elite*100 / result[1]
-        for idx in range(dim):
-            pheromones[result[0][idx]][result[0][(idx+1) % dim]] += delta
+        if (elite):
+            delta = elite*100 / result[1]
+            for idx in range(dim):
+                pheromones[result[0][idx]][result[0][(idx+1) % dim]] *= 1-rho
+                pheromones[result[0][idx]][result[0][(idx+1) % dim]] += delta
 
     return result[0], result[1], time.time() - start
