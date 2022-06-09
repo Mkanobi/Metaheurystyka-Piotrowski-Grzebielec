@@ -28,12 +28,16 @@ if __name__ == '__main__':
                         help='Nazwa pliku do użycia jako input')
     parser.add_argument('--output', type=str,
                         help='Nazwa pliku do użycia jako output wygenerowanego problemu')
+    parser.add_argument('--optimal', type=int,
+                        help='')
 
 
     type = "EUC_2D"
     dim = 100
     minimum = 0
     maximum = 500
+    optimal = math.inf
+    timer=2
     args = parser.parse_args()
     if (args.type is not None):
         if (args.type != "EUC_2D" and args.type != "ATSP_EXPLICIT" and args.type != "TSP_EXPLICIT"):
@@ -45,6 +49,8 @@ if __name__ == '__main__':
         minimum = args.min
     if (args.max is not None):
         maximum = args.max
+    if (args.optimal is not None):
+        optimal = args.optimal
 
     if (args.input is None):
         if (type == "EUC_2D"):
@@ -68,19 +74,19 @@ if __name__ == '__main__':
     result = [math.inf for _ in range(11)]
     exec_time = [0.0 for _ in range(11)]
 
-    # start = time.time()
-    # tmp = k_random(problem,1000)
-    # result[0] = tmp[1]
-    # end = time.time()
-    # exec_time[0] = end - start
-    # print("Obliczono k-random...")
-
     start = time.time()
-    tmp1 = nearest_neighbour(problem,1)
-    result[1] = tmp1[1]
+    tmp = k_random(problem,1000)
+    result[0] = tmp[1]
     end = time.time()
-    exec_time[1] = end - start
-    print("Obliczono nn...")
+    exec_time[0] = end - start
+    print("Obliczono k-random...")
+
+    # start = time.time()
+    # tmp1 = nearest_neighbour(problem,1)
+    # result[1] = tmp1[1]
+    # end = time.time()
+    # exec_time[1] = end - start
+    # print("Obliczono nn...")
 
     # start = time.time()
     # result[2] = extended_nearest_neighbour(problem)[1]
@@ -100,7 +106,7 @@ if __name__ == '__main__':
     # exec_time[4] = end - start
     # print("Obliczono tabu_search...")
 
-    exe = tabu_time(problem,tmp1[0],'swap',7,3,5,10)
+    exe = tabu_time(problem,tmp[0],'swap',7,3,timer,10)
     result[5] = exe[1]
     exec_time[5] = exe[2]
     print("Obliczono tabu_time...")
@@ -128,21 +134,21 @@ if __name__ == '__main__':
     # exec_time[9] = exe[2]
     # print('Obliczono Timed...\n')
 
-    exe = elite_timed_randomized(problem, 5, 20, 4, 1, 3, 0.1, 0, 0)
+    exe = elite_timed_randomized(problem, timer, 20, 4, 1, 3, 0.1, 0.25, 0)
     result[10] = exe[1]
     exec_time[10] = exe[2]
     print('Obliczono Timed, elite, randomized...\n')
 
-    best = min(result)
+    best = min(result) if optimal == math.inf else optimal
 
 
-    # print('Rozwiazanie 1000-Random: ' + str(result[0]))
-    # print('PRD 1000-Random: ' + "{:.2%}".format( (result[0]-best)/best) )
-    # print('Czas 1000-Random: ' + str(exec_time[0]) + ' s\n')
+    print('Rozwiazanie 1000-Random: ' + str(result[0]))
+    print('PRD 1000-Random: ' + "{:.2%}".format( (result[0]-best)/best) )
+    print('Czas 1000-Random: ' + str(exec_time[0]) + ' s\n')
 
-    print('Rozwiazanie Nearest Nieghbour: ' + str(result[1]))
-    print('PRD Nearest Nieghbour: ' + "{:.2%}".format( (result[1]-best)/best))
-    print('Czas Nearest Nieghbour: ' + str(exec_time[1]) + ' s\n')
+    # print('Rozwiazanie Nearest Nieghbour: ' + str(result[1]))
+    # print('PRD Nearest Nieghbour: ' + "{:.2%}".format( (result[1]-best)/best))
+    # print('Czas Nearest Nieghbour: ' + str(exec_time[1]) + ' s\n')
 
     # print('Rozwiazanie Extended Nearest Nieghbour: ' + str(result[2]))
     # print('PRD Extended Nearest Nieghbour: ' + "{:.2%}".format( (result[2]-best)/best))
