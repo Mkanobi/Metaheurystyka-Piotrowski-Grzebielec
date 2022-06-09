@@ -94,7 +94,7 @@ ax2.set_title("Wykres mediany PRD rozwiązań w zależności od czasu wykonywani
 ax2.plot(x, results[1][1], "-b", label="ant colony")
 ax2.plot(x, results[1][2], "-g", label="ant colony + ACS ppb")
 ax2.plot(x, results[1][3], "-m", label="ant colony + Elitism")
-ax1.plot(x, results[1][4], "-c", label="ant colony multiplication")
+ax2.plot(x, results[1][4], "-c", label="ant colony multiplication")
 ax2.set(xlabel="Czas działania [s]", ylabel="Mediana PRD")
 ax2.legend(loc="upper left")
 ax2.grid()
