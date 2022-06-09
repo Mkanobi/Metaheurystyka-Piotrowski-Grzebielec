@@ -45,7 +45,7 @@ def quality_by_time_tester(x,solution, k=100,):
             lst[1] = ant_colony(problem1, x[i], colony_size, 4, 1, 3, 0.1, 0, 0)
             end = time.time()
             print("czas " + str(end-start))
-            if (end-start > x[i]*2.5):
+            if (end-start > x[i]*50):
                 print("Zbyt malo czasu!")
                 return
             lst[2] = ant_colony(problem1, x[i], colony_size, 4, 1, 3, 0.1, 2, 1)
@@ -53,27 +53,27 @@ def quality_by_time_tester(x,solution, k=100,):
             lst[3] = ant_colony(problem1, x[i], colony_size, 4, 1, 3, 0.1, 2, 0)
 
             lst[4] = ant_colony_mult(problem1, x[i], colony_size, 4, 1, 3, 0.1, 0, 0)
-            
+
             for l in range(0,5):
                 tmp_prd[l][j] = abs(lst[l][1] - solution) / solution
 #                tmp_val[l][j] = lst[l][1]
                 results_val
-        
+
         for l in range(0,5):
             results_prd[l][i] = stat.mean(tmp_prd[l])
             results_val[l][i] = stat.median(tmp_prd[l])
         #print(results_val[1][i])
         #print(results_val[2][i])
         #print(results_val[3][i])
-        
+
     return results_prd, results_val
 
 
 
 x = [float(i/10) for i in range(1, 11, 1)]
 
-problem_count = 1
-sarting_k_random =1
+problem_count = 20
+sarting_k_random =100
 results = quality_by_time_tester(x,solution,problem_count)
 fig, (ax1, ax2) = plt.subplots(1, 2)
 fig.suptitle('Problem ' + problem + ', solution = ' + str(solution))
@@ -99,7 +99,7 @@ ax2.set(xlabel="Czas działania [s]", ylabel="Mediana PRD")
 ax2.legend(loc="upper left")
 ax2.grid()
 
- 
+
 #manager = plt.get_current_fig_manager()
 #manager.resize(*manager.window.maxsize())
 figure = plt.gcf()
