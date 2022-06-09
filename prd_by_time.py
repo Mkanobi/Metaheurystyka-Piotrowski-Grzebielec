@@ -41,9 +41,13 @@ def quality_by_time_tester(x,solution, k=100,):
                 print("krandom time exceeded!")
                 return
             lst[0] = tabu_search(problem1,tmp_start[0],'swap',10,5,x[i] - (end-start),10)
-
+            start = time.time()
             lst[1] = ant_colony(problem1, x[i], colony_size, 4, 1, 3, 0.1, 0, 0)
-
+            end = time.time()
+            print("czas " + str(end-start))
+            if (end-start > x[i]*2.5):
+                print("Zbyt malo czasu!")
+                return
             lst[2] = ant_colony(problem1, x[i], colony_size, 4, 1, 3, 0.1, 2, 1)
 
             lst[3] = ant_colony(problem1, x[i], colony_size, 4, 1, 3, 0.1, 2, 0)
