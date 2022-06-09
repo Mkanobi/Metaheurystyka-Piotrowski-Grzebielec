@@ -26,7 +26,7 @@ def ant_walk(weights: list, pheromones: list, starting_city: int, alpha: int, be
         city = path[-1]
         ppb = [
             (pheromones[city][k] * alpha * \
-            (1 / weights[city][k]) * beta) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
+            ((1 / weights[city][k]) * beta) if weights[city][k] != 0 else -1) if k not in path else 0.0 for k in range(dim)]
         if -1 not in ppb:
             zipped = zip(ppb, range(dim))
             greedy_choice = max(zipped)[1]
